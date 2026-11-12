@@ -1,36 +1,47 @@
-function loadSettings() {
+(function () {
+  'use strict';
+
+  function loadSettings() {
     chrome.storage.sync.get(['muteMicrophone', 'muteCamera'], function (result) {
-        var micCheckbox = document.getElementById('muteMicrophone');
-        var camCheckbox = document.getElementById('muteCamera');
-        if (micCheckbox) {
-            micCheckbox.checked = Boolean(result.muteMicrophone);
-        }
-        if (camCheckbox) {
-            camCheckbox.checked = Boolean(result.muteCamera);
-        }
+      if (chrome.runtime.lastError) {
+        console.error('Error loading settings:', chrome.runtime.lastError);
+        return;
+      }
+      var micCheckbox = document.getElementById('muteMicrophone');
+      var camCheckbox = document.getElementById('muteCamera');
+      if (micCheckbox) {
+        micCheckbox.checked = Boolean(result && result.muteMicrophone);
+      }
+      if (camCheckbox) {
+        camCheckbox.checked = Boolean(result && result.muteCamera);
+      }
     });
 
-    var camEl = document.getElementById('muteCamera');
     var micEl = document.getElementById('muteMicrophone');
-    if (camEl) {
-        camEl.addEventListener('change', saveSettings);
-    }
+    var camEl = document.getElementById('muteCamera');
     if (micEl) {
-        micEl.addEventListener('change', saveSettings);
+      micEl.addEventListener('change', saveSettings);
     }
-}
+    if (camEl) {
+      camEl.addEventListener('change', saveSettings);
+    }
+  }
 
-function saveSettings() {
+  function saveSettings() {
     var micEl = document.getElementById('muteMicrophone');
     var camEl = document.getElementById('muteCamera');
 
-    var muteMicrophone = micEl ? micEl.checked : false;
-    var muteCamera = camEl ? camEl.checked : false;
+    var settings = {
+      muteMicrophone: micEl ? micEl.checked : false,
+      muteCamera: camEl ? camEl.checked : false
+    };
 
-    chrome.storage.sync.set({
-        'muteMicrophone': muteMicrophone,
-        'muteCamera': muteCamera
+    chrome.storage.sync.set(settings, function () {
+      if (chrome.runtime.lastError) {
+        console.error('Error saving settings:', chrome.runtime.lastError);
+      }
     });
-}
+  }
 
-document.addEventListener('DOMContentLoaded', loadSettings);
+  document.addEventListener('DOMContentLoaded', loadSettings);
+})();

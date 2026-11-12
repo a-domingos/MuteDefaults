@@ -5,7 +5,7 @@
   "description": "This extension lets you set default mute settings for your microphone and camera in google meet.",
   "version": "3.1",
   "author": "ADomingos",
-  "homepage_url": "http://github.com/jjshoe/MuteDefaults",
+  "homepage_url": "https://github.com/a-domingos/MuteDefaults",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -13,7 +13,11 @@
   },
 
   "action": {
-    "default_icon": "icon128.png",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
     "default_popup": "settings.html",
     "default_title": "Manage microphone and camera settings on google meet"
   },
