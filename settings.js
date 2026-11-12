@@ -1,22 +1,36 @@
 function loadSettings() {
-    chrome.storage.sync.get('muteMicrophone', function (result) {
-        document.getElementById('muteMicrophone').checked = result.muteMicrophone;
+    chrome.storage.sync.get(['muteMicrophone', 'muteCamera'], function (result) {
+        var micCheckbox = document.getElementById('muteMicrophone');
+        var camCheckbox = document.getElementById('muteCamera');
+        if (micCheckbox) {
+            micCheckbox.checked = Boolean(result.muteMicrophone);
+        }
+        if (camCheckbox) {
+            camCheckbox.checked = Boolean(result.muteCamera);
+        }
     });
 
-    chrome.storage.sync.get('muteCamera', function (result) {
-        document.getElementById('muteCamera').checked = result.muteCamera;
-    });
-
-    document.getElementById('muteCamera').addEventListener('click', saveSettings);
-    document.getElementById('muteMicrophone').addEventListener('click', saveSettings);
+    var camEl = document.getElementById('muteCamera');
+    var micEl = document.getElementById('muteMicrophone');
+    if (camEl) {
+        camEl.addEventListener('change', saveSettings);
+    }
+    if (micEl) {
+        micEl.addEventListener('change', saveSettings);
+    }
 }
 
 function saveSettings() {
-    muteMicrophone = document.getElementById('muteMicrophone').checked
-    muteCamera = document.getElementById('muteCamera').checked
+    var micEl = document.getElementById('muteMicrophone');
+    var camEl = document.getElementById('muteCamera');
 
-    chrome.storage.sync.set({'muteMicrophone': muteMicrophone});
-    chrome.storage.sync.set({'muteCamera': muteCamera});
+    var muteMicrophone = micEl ? micEl.checked : false;
+    var muteCamera = camEl ? camEl.checked : false;
+
+    chrome.storage.sync.set({
+        'muteMicrophone': muteMicrophone,
+        'muteCamera': muteCamera
+    });
 }
 
-window.addEventListener('load', loadSettings);
+document.addEventListener('DOMContentLoaded', loadSettings);
